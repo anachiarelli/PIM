@@ -1,0 +1,47 @@
+from PIL import Image
+import sys
+
+# A função abaixo arredonda o valor para 0 ou 255 dependendo de sua proximidade com 255
+def customRound(num, base):
+    return base * round(num/base)
+
+# Recebe o caminho da imagem pela linha de comando
+img = Image.open(sys.argv[1])
+img = img.convert('RGB')
+
+# Define as coordenadas de um pixel específico no centro da imagem
+x = img.size[0]/2
+y = img.size[1]/2
+
+r, g, b = img.getpixel((x, y))
+r = customRound(r, 255)
+g = customRound(g, 255)
+b = customRound(b, 255)
+
+if r == 255 and g == 0 and b == 0:
+    print('Vermelho')
+elif r == 0 and g == 255 and b == 0:
+    print('Verde')
+elif r == 0 and g == 0 and b == 255:
+    print('Azul')
+elif r == 255 and g == 255 and b == 255:
+    print('Branco')
+elif r == 0 and g == 0 and b == 0:
+    print('Preto')
+else:
+    print('Ocorreu um erro')
+
+"""
+# alpha, beta and gama weight values from:
+# Fundamentals of Digital Image Processing - Chris Solomon & Toby Breckon (John Wiley & Sons Ltd, 2011, p.11)
+alpha = 0.1
+beta = 0.1
+gama = 0.7
+for i in range(0, width):
+    for j in range(0, height):
+        # grey color has the same value for red, green and blue
+        grey = round(new_image[i,j][0] * alpha + beta * new_image[i,j][1] + gama * new_image[i,j][2])
+        new_image[i,j] = (grey, grey, grey)
+
+img.save('grey_parrot9.png')
+"""
