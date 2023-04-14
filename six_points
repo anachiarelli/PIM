@@ -1,0 +1,70 @@
+import math
+
+import numpy as np
+
+xp = [5, 3, 2, 1, 2, 2]
+yp = [3, 4, 4, 2, 3, 5]
+x = [0.0, 600.0, 1000.0, 1000.0, 1000.0, 1000.0]
+y = [1000.0, 1000.0, 800.0, 400.0, 1000.0, 800.0]
+z = [200.0, 400.0, 400.0, 600.0, 600.0, 0.0]
+
+c = []
+for i in range(6):
+    equation = [x[i], y[i], z[i], 1, 0, 0, 0, 0, (-xp[i] * x[i]), (-xp[i] * y[i]), (-xp[i] * z[i])]
+    c.append(equation)
+    equation = [0, 0, 0, 0, x[i], y[i], z[i], 1, (-yp[i] * x[i]), (-yp[i] * y[i]), (-yp[i] * z[i])]
+    c.append(equation)
+    
+# Removendo a ultima linha
+c = c[:-1]
+
+# matriz dos resultados:
+r = []
+for i in range(6):
+    r.append(xp[i])
+    r.append(yp[i])
+
+# Removendo o ultimo elemento:
+r = r[:-1]
+
+# resolvendo o sistema para obter os valores de a11 até a34
+m = np.linalg.solve(c, r)
+
+m_proj = np.zeros((3, 4))
+
+i = 0
+for j in range(3):
+    for k in range(4):
+        if (i < 11):
+            m_proj[j][k] = m[i]
+            i += 1
+
+m_proj[2][3] = 1
+
+# ph
+ph = []
+
+for i in range(6):
+    P = [x[i], y[i], z[i], 1]
+    ph.append(np.matmul(m_proj, P))
+
+xc = [0, 0, 0, 0, 0, 0]
+yc = [0, 0, 0, 0, 0, 0]
+
+for i in range(6):
+    xc[i] = round(ph[i][0] / ph[i][2])
+    yc[i] = round(ph[i][1] / ph[i][2])
+
+for i in range(6):
+    print("(", xp[i], ",", yp[i], ") | (",xc[i], ",", yc[i], ")")
+
+
+def distanciaEntrePontos(x_matriz, x_real, y_matriz, y_real):
+    return math.sqrt(math.pow(x_real - x_matriz, 2) + math.pow(y_real - y_matriz, 2))
+
+erro_medio = 0
+for i in range(6):
+    erro_medio = erro_medio + distanciaEntrePontos(xp[i], xc[i], yp[i], yc[i])
+erro_medio = erro_medio/6
+
+print('O erro médio é de: ', erro_medio, 'pixels')
