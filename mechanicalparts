@@ -1,0 +1,37 @@
+import numpy as np
+
+# parametros intrínsecos da câmera:
+# dimensões do pixel (em mm):
+sx = sy = 0.0075
+# distância focal (em mm):
+d = 5
+# coordenadas do centro da imagem (tamanho do pixel * quantidade de pixels):
+ox = 1024
+oy = 1024
+
+# pontos
+a = [650.7, 2000, 1500, 1]
+b = [653.5, 2000, 1500, 1]
+c = [650.7, 1990, 1500, 1]
+dd = [653.5, 1990, 1500, 1]
+e = [645.3, 500.3, 1500, 1]
+f = [645, 500.3, 1500, 1]
+g = [645.3, 500, 1500, 1]
+h = [645.0, 500, 1500, 1]
+
+pontos = [a, b, c, e, f, g]
+
+for p in pontos:
+    x = p[0]
+    y = p[1]
+    z = p[2]
+
+    qpp = [
+        (d * x / (sx * z) + ox),
+        (-d * y / (sy * z) + oy)
+    ]
+    qpmm = [
+        abs(round((d * x / (sx * z) + ox) * sx, 1)),
+        abs(round((-d * y / (sy * z) + oy) * sx, 1))
+    ]
+    print("pixels: ", qpp, "|  milimetros:", qpmm)
